@@ -1,13 +1,40 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import Preloader from '@/components/Preloader';
+import HeroSection from '@/components/HeroSection';
+import ManifestSection from '@/components/ManifestSection';
+import TourDatesSection from '@/components/TourDatesSection';
+import TourMapSection from '@/components/TourMapSection';
+import ReleasesSection from '@/components/ReleasesSection';
+import MerchSection from '@/components/MerchSection';
+import AboutSection from '@/components/AboutSection';
+import Footer from '@/components/Footer';
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+      
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
+      
+      {/* Vignette */}
+      <div className="vignette" />
+      
+      <main className={`min-h-screen bg-background transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="max-w-3xl mx-auto">
+          <HeroSection />
+          <ManifestSection />
+          <TourDatesSection />
+          <TourMapSection />
+          <ReleasesSection />
+          <MerchSection />
+          <AboutSection />
+          <Footer />
+        </div>
+      </main>
+    </>
   );
 };
 
