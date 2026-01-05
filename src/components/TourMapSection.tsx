@@ -1,161 +1,221 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useRef, useState } from 'react';
 
 interface City {
   name: string;
-  coordinates: [number, number];
+  x: number;
+  y: number;
   date: string;
 }
 
+// Approximate positions on a stylized Russia map (percentage-based)
 const cities: City[] = [
-  { name: "Санкт-Петербург", coordinates: [30.3351, 59.9343], date: "24.01" },
-  { name: "Петрозаводск", coordinates: [34.3477, 61.7849], date: "26.01" },
-  { name: "Москва", coordinates: [37.6173, 55.7558], date: "31.01" },
-  { name: "Казань", coordinates: [49.1221, 55.7887], date: "03.02" },
-  { name: "Нижний Новгород", coordinates: [43.9361, 56.2965], date: "06.02" },
-  { name: "Екатеринбург", coordinates: [60.6122, 56.8389], date: "09.02" },
-  { name: "Новосибирск", coordinates: [82.9346, 55.0084], date: "12.02" },
-  { name: "Краснодар", coordinates: [38.9760, 45.0355], date: "15.02" },
-  { name: "Самара", coordinates: [50.1500, 53.2001], date: "18.02" },
+  { name: "Санкт-Петербург", x: 18, y: 25, date: "24.01" },
+  { name: "Петрозаводск", x: 22, y: 18, date: "26.01" },
+  { name: "Москва", x: 24, y: 35, date: "31.01" },
+  { name: "Казань", x: 35, y: 38, date: "03.02" },
+  { name: "Нижний Новгород", x: 29, y: 36, date: "06.02" },
+  { name: "Екатеринбург", x: 45, y: 38, date: "09.02" },
+  { name: "Новосибирск", x: 58, y: 42, date: "12.02" },
+  { name: "Краснодар", x: 25, y: 55, date: "15.02" },
+  { name: "Самара", x: 35, y: 45, date: "18.02" },
 ];
+
+// Route order for connecting lines
+const routeOrder = [0, 1, 2, 4, 3, 5, 6, 8, 7]; // SPB -> Petrozavodsk -> Moscow -> NN -> Kazan -> Ekb -> Novosib -> Samara -> Krasnodar
 
 const TourMapSection = () => {
   const ref = useRef(null);
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [showTokenInput, setShowTokenInput] = useState(true);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [hoveredCity, setHoveredCity] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (!mapContainer.current || !mapboxToken || !isInView) return;
-
-    mapboxgl.accessToken = mapboxToken;
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [50, 56],
-      zoom: 3,
-      pitch: 0,
-      interactive: true,
-    });
-
-    map.current.on('load', () => {
-      // Add markers for each city
-      cities.forEach((city) => {
-        // Create custom marker element
-        const markerEl = document.createElement('div');
-        markerEl.className = 'custom-marker';
-        markerEl.innerHTML = `
-          <div style="
-            width: 12px;
-            height: 12px;
-            background: hsl(0 45% 20%);
-            border: 2px solid hsl(0 0% 75%);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-          "></div>
-        `;
-        
-        markerEl.addEventListener('mouseenter', () => {
-          markerEl.querySelector('div')!.style.transform = 'scale(1.5)';
-        });
-        
-        markerEl.addEventListener('mouseleave', () => {
-          markerEl.querySelector('div')!.style.transform = 'scale(1)';
-        });
-
-        // Create popup
-        const popup = new mapboxgl.Popup({
-          offset: 15,
-          closeButton: false,
-          className: 'custom-popup',
-        }).setHTML(`
-          <div style="
-            background: hsl(0 0% 6%);
-            padding: 12px 16px;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid hsl(0 0% 15%);
-          ">
-            <p style="color: hsl(0 0% 75%); font-size: 12px; margin: 0 0 4px 0; letter-spacing: 0.1em;">
-              ${city.date}
-            </p>
-            <p style="color: hsl(0 0% 85%); font-size: 14px; margin: 0; font-weight: 500;">
-              ${city.name}
-            </p>
-          </div>
-        `);
-
-        new mapboxgl.Marker(markerEl)
-          .setLngLat(city.coordinates)
-          .setPopup(popup)
-          .addTo(map.current!);
-      });
-    });
-
-    return () => {
-      map.current?.remove();
-    };
-  }, [mapboxToken, isInView]);
+  // Generate path for connecting lines
+  const generatePath = () => {
+    let path = '';
+    for (let i = 0; i < routeOrder.length; i++) {
+      const city = cities[routeOrder[i]];
+      if (i === 0) {
+        path += `M ${city.x} ${city.y}`;
+      } else {
+        path += ` L ${city.x} ${city.y}`;
+      }
+    }
+    return path;
+  };
 
   return (
     <section ref={ref} className="py-16 px-6">
-      <p className="section-label">КАРТА ТУРА</p>
+      <p className="section-label">ГЕОГРАФИЯ</p>
       
       <motion.div
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8 }}
-        className="relative"
+        transition={{ duration: 1 }}
+        className="relative w-full aspect-[16/10] bg-card/20 border border-border/30 overflow-hidden"
       >
-        {showTokenInput && !mapboxToken && (
-          <div className="mb-6 p-4 border border-border/50 bg-card/30">
-            <p className="text-xs text-muted-foreground mb-3 font-mono">
-              Введите Mapbox public token для отображения карты:
-            </p>
-            <input
-              type="text"
-              placeholder="pk.eyJ..."
-              className="w-full bg-muted/30 border border-border px-4 py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  const value = (e.target as HTMLInputElement).value;
-                  if (value.startsWith('pk.')) {
-                    setMapboxToken(value);
-                    setShowTokenInput(false);
-                  }
-                }
-              }}
-            />
-            <p className="text-xs text-muted-foreground/50 mt-2 font-mono">
-              Получите токен на mapbox.com → Tokens
-            </p>
-          </div>
-        )}
-        
+        {/* Background grid */}
         <div 
-          ref={mapContainer} 
-          className="w-full aspect-[16/10] bg-muted/20"
-          style={{ display: mapboxToken ? 'block' : 'none' }}
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+              linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px)
+            `,
+            backgroundSize: '10% 10%'
+          }}
         />
         
-        {!mapboxToken && (
-          <div className="w-full aspect-[16/10] bg-muted/10 flex items-center justify-center border border-border/30">
-            <div className="text-center">
-              <p className="text-muted-foreground/50 text-sm font-mono">
-                9 городов
+        {/* SVG Map */}
+        <svg 
+          viewBox="0 0 100 70" 
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {/* Animated route line */}
+          <motion.path
+            d={generatePath()}
+            fill="none"
+            stroke="hsl(var(--muted-foreground))"
+            strokeWidth="0.15"
+            strokeDasharray="1 0.5"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={isInView ? { pathLength: 1, opacity: 0.4 } : {}}
+            transition={{ duration: 3, delay: 0.5, ease: "easeInOut" }}
+          />
+          
+          {/* Glowing route line overlay */}
+          <motion.path
+            d={generatePath()}
+            fill="none"
+            stroke="hsl(var(--accent))"
+            strokeWidth="0.3"
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={isInView ? { pathLength: 1, opacity: 0.6 } : {}}
+            transition={{ duration: 3, delay: 0.5, ease: "easeInOut" }}
+            style={{ filter: 'blur(2px)' }}
+          />
+
+          {/* City points */}
+          {cities.map((city, index) => (
+            <g key={index}>
+              {/* Outer glow */}
+              <motion.circle
+                cx={city.x}
+                cy={city.y}
+                r={hoveredCity === index ? 2.5 : 1.5}
+                fill="hsl(var(--accent))"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 0.3, scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                style={{ filter: 'blur(3px)' }}
+              />
+              
+              {/* Inner point */}
+              <motion.circle
+                cx={city.x}
+                cy={city.y}
+                r={hoveredCity === index ? 1.2 : 0.8}
+                fill="hsl(var(--primary))"
+                stroke="hsl(var(--accent))"
+                strokeWidth="0.2"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredCity(index)}
+                onMouseLeave={() => setHoveredCity(null)}
+                style={{ transition: 'r 0.3s ease' }}
+              />
+              
+              {/* Pulse animation */}
+              <motion.circle
+                cx={city.x}
+                cy={city.y}
+                r="0.8"
+                fill="none"
+                stroke="hsl(var(--accent))"
+                strokeWidth="0.1"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { 
+                  opacity: [0.5, 0],
+                  r: [0.8, 3],
+                } : {}}
+                transition={{ 
+                  duration: 2,
+                  delay: 1 + index * 0.15,
+                  repeat: Infinity,
+                  repeatDelay: 3
+                }}
+              />
+            </g>
+          ))}
+        </svg>
+
+        {/* City labels */}
+        {cities.map((city, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: hoveredCity === index ? 1 : 0.7 } : { opacity: 0 }}
+            transition={{ duration: 0.3, delay: 1 + index * 0.1 }}
+            className="absolute pointer-events-none"
+            style={{
+              left: `${city.x}%`,
+              top: `${city.y}%`,
+              transform: 'translate(-50%, -150%)'
+            }}
+          >
+            <div className={`text-center transition-all duration-300 ${hoveredCity === index ? 'scale-110' : ''}`}>
+              <p className="text-[8px] md:text-[10px] font-mono text-primary whitespace-nowrap">
+                {city.name.toUpperCase()}
               </p>
-              <p className="text-muted-foreground/30 text-xs font-mono mt-1">
-                Январь — Февраль 2026
+              <p className="text-[7px] md:text-[9px] font-mono text-accent-foreground">
+                {city.date}
               </p>
             </div>
-          </div>
+          </motion.div>
+        ))}
+
+        {/* Hover tooltip */}
+        {hoveredCity !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-48 p-3 bg-card/90 border border-border/50 backdrop-blur-sm"
+          >
+            <p className="text-xs font-mono text-primary font-semibold">
+              {cities[hoveredCity].name}
+            </p>
+            <p className="text-[10px] font-mono text-muted-foreground mt-1">
+              {cities[hoveredCity].date}.2026
+            </p>
+          </motion.div>
         )}
+
+        {/* Corner decorations */}
+        <div className="absolute top-2 left-2 w-4 h-4 border-l border-t border-border/50" />
+        <div className="absolute top-2 right-2 w-4 h-4 border-r border-t border-border/50" />
+        <div className="absolute bottom-2 left-2 w-4 h-4 border-l border-b border-border/50" />
+        <div className="absolute bottom-2 right-2 w-4 h-4 border-r border-b border-border/50" />
+      </motion.div>
+
+      {/* Legend */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.6, delay: 2 }}
+        className="mt-4 flex items-center gap-6 text-[10px] font-mono text-muted-foreground"
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary border border-accent" />
+          <span>ГОРОД</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-px bg-muted-foreground opacity-50" style={{ backgroundImage: 'repeating-linear-gradient(90deg, hsl(var(--muted-foreground)) 0, hsl(var(--muted-foreground)) 3px, transparent 3px, transparent 6px)' }} />
+          <span>МАРШРУТ</span>
+        </div>
       </motion.div>
     </section>
   );
