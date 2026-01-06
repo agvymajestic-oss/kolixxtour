@@ -20,41 +20,50 @@ const cities: City[] = [
   { name: "Петрозаводск", x: 22, y: 10, date: "26.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
   { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
   { name: "Казань", x: 40, y: 28, date: "03.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Нижний Новгород", shortName: "Н.Новгород", x: 32, y: 30, date: "06.02", labelOffset: { x: 0, y: 5 }, ticketUrl: TICKET_URL },
+  { name: "Нижний Новгород", shortName: "Н.Новгород", x: 30, y: 38, date: "06.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
   { name: "Екатеринбург", x: 52, y: 26, date: "09.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
   { name: "Новосибирск", x: 68, y: 36, date: "12.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
   { name: "Краснодар", x: 25, y: 54, date: "15.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
   { name: "Самара", x: 42, y: 44, date: "18.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
 ];
 
-// Route order starting from Saint Petersburg (index 0)
-const routeOrder = [0, 1, 2, 4, 3, 5, 6, 8, 7];
+// Route order by date: СПб(24.01) → Петрозаводск(26.01) → Москва(31.01) → Казань(03.02) → Н.Новгород(06.02) → Екатеринбург(09.02) → Новосибирск(12.02) → Краснодар(15.02) → Самара(18.02)
+const routeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-// Snowflake component
-const Snowflake = ({ delay, duration, x, size }: { delay: number; duration: number; x: number; size: number }) => (
-  <motion.div
-    className="absolute rounded-full bg-foreground/20"
-    style={{
-      width: size,
-      height: size,
-      left: `${x}%`,
-      top: -10,
-      filter: 'blur(1px)',
-    }}
-    initial={{ y: -10, opacity: 0, x: 0 }}
-    animate={{
-      y: ['0%', '110%'],
-      opacity: [0, 0.6, 0.6, 0],
-      x: [0, Math.sin(delay) * 30, 0],
-    }}
-    transition={{
-      duration,
-      delay,
-      repeat: Infinity,
-      ease: 'linear',
-    }}
-  />
-);
+// Snowflake component with CSS animation for better performance
+const Snowflake = ({ delay, duration, x, size }: { delay: number; duration: number; x: number; size: number }) => {
+  const drift = Math.sin(delay * 10) * 20;
+  
+  return (
+    <motion.div
+      className="absolute rounded-full bg-white/40"
+      style={{
+        width: size,
+        height: size,
+        left: `${x}%`,
+        filter: `blur(${size > 4 ? 2 : 1}px)`,
+        willChange: 'transform',
+      }}
+      initial={{ y: '-5%', opacity: 0 }}
+      animate={{
+        y: '105vh',
+        opacity: [0, 0.7, 0.7, 0],
+        x: [0, drift, 0, -drift, 0],
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        ease: 'linear',
+        x: {
+          duration: duration / 2,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }
+      }}
+    />
+  );
+};
 
 const TourMapSection = () => {
   const ref = useRef(null);
@@ -63,14 +72,14 @@ const TourMapSection = () => {
   const [flyingPointProgress, setFlyingPointProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Generate snowflakes only once
+  // Generate snowflakes only once - increased count for visible snow
   const snowflakes = useMemo(() => 
-    Array.from({ length: 30 }, (_, i) => ({
+    Array.from({ length: 50 }, (_, i) => ({
       id: i,
-      delay: Math.random() * 8,
-      duration: 6 + Math.random() * 6,
+      delay: i * 0.15, // Staggered start for continuous effect
+      duration: 8 + Math.random() * 8,
       x: Math.random() * 100,
-      size: 2 + Math.random() * 4,
+      size: 2 + Math.random() * 5,
     })), []
   );
 
