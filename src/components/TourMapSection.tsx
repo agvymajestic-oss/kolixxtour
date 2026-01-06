@@ -1,30 +1,60 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 
 interface City {
   name: string;
+  shortName?: string;
   x: number;
   y: number;
   date: string;
-  labelOffset: { x: number; y: number }; // Custom offset for each label
+  labelOffset: { x: number; y: number };
+  ticketUrl: string;
 }
+
+const TICKET_URL = "https://moscow.qtickets.events/208586-izi-moscow-club-kolixx";
 
 // Approximate positions on a stylized Russia map with custom label offsets
 const cities: City[] = [
-  { name: "Санкт-Петербург", x: 15, y: 20, date: "24.01", labelOffset: { x: -8, y: -4 } },
-  { name: "Петрозаводск", x: 20, y: 12, date: "26.01", labelOffset: { x: 0, y: -4 } },
-  { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: -10, y: 2 } },
-  { name: "Казань", x: 38, y: 30, date: "03.02", labelOffset: { x: 4, y: -3 } },
-  { name: "Нижний Новгород", x: 30, y: 28, date: "06.02", labelOffset: { x: 0, y: -4 } },
-  { name: "Екатеринбург", x: 50, y: 28, date: "09.02", labelOffset: { x: 4, y: 0 } },
-  { name: "Новосибирск", x: 65, y: 38, date: "12.02", labelOffset: { x: 4, y: 0 } },
-  { name: "Краснодар", x: 25, y: 52, date: "15.02", labelOffset: { x: 4, y: 2 } },
-  { name: "Самара", x: 40, y: 42, date: "18.02", labelOffset: { x: 4, y: 0 } },
+  { name: "Санкт-Петербург", shortName: "СПб", x: 15, y: 20, date: "24.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
+  { name: "Петрозаводск", x: 22, y: 10, date: "26.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
+  { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
+  { name: "Казань", x: 40, y: 28, date: "03.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
+  { name: "Нижний Новгород", shortName: "Н.Новгород", x: 32, y: 30, date: "06.02", labelOffset: { x: 0, y: 5 }, ticketUrl: TICKET_URL },
+  { name: "Екатеринбург", x: 52, y: 26, date: "09.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
+  { name: "Новосибирск", x: 68, y: 36, date: "12.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
+  { name: "Краснодар", x: 25, y: 54, date: "15.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
+  { name: "Самара", x: 42, y: 44, date: "18.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
 ];
 
-// Route order for connecting lines
+// Route order starting from Saint Petersburg (index 0)
 const routeOrder = [0, 1, 2, 4, 3, 5, 6, 8, 7];
+
+// Snowflake component
+const Snowflake = ({ delay, duration, x, size }: { delay: number; duration: number; x: number; size: number }) => (
+  <motion.div
+    className="absolute rounded-full bg-foreground/20"
+    style={{
+      width: size,
+      height: size,
+      left: `${x}%`,
+      top: -10,
+      filter: 'blur(1px)',
+    }}
+    initial={{ y: -10, opacity: 0, x: 0 }}
+    animate={{
+      y: ['0%', '110%'],
+      opacity: [0, 0.6, 0.6, 0],
+      x: [0, Math.sin(delay) * 30, 0],
+    }}
+    transition={{
+      duration,
+      delay,
+      repeat: Infinity,
+      ease: 'linear',
+    }}
+  />
+);
 
 const TourMapSection = () => {
   const ref = useRef(null);
@@ -33,11 +63,22 @@ const TourMapSection = () => {
   const [flyingPointProgress, setFlyingPointProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Generate snowflakes only once
+  const snowflakes = useMemo(() => 
+    Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      delay: Math.random() * 8,
+      duration: 6 + Math.random() * 6,
+      x: Math.random() * 100,
+      size: 2 + Math.random() * 4,
+    })), []
+  );
+
   // Start flying animation when in view
   useEffect(() => {
     if (isInView && !isAnimating) {
       setIsAnimating(true);
-      const duration = 8000; // 8 seconds for full route
+      const duration = 8000;
       const startTime = Date.now();
       
       const animate = () => {
@@ -48,7 +89,6 @@ const TourMapSection = () => {
         if (progress < 1) {
           requestAnimationFrame(animate);
         } else {
-          // Restart animation after a pause
           setTimeout(() => {
             setFlyingPointProgress(0);
             setIsAnimating(false);
@@ -58,7 +98,7 @@ const TourMapSection = () => {
       
       setTimeout(() => {
         requestAnimationFrame(animate);
-      }, 3500); // Start after route line is drawn
+      }, 3500);
     }
   }, [isInView, isAnimating]);
 
@@ -93,6 +133,10 @@ const TourMapSection = () => {
     };
   };
 
+  const handleCityClick = (city: City) => {
+    window.open(city.ticketUrl, '_blank', 'noopener,noreferrer');
+  };
+
   const flyingPoint = getFlyingPointPosition();
 
   return (
@@ -105,6 +149,13 @@ const TourMapSection = () => {
         transition={{ duration: 1 }}
         className="relative w-full aspect-[16/10] bg-card/20 border border-border/30 overflow-hidden"
       >
+        {/* Snowfall effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {snowflakes.map((flake) => (
+            <Snowflake key={flake.id} {...flake} />
+          ))}
+        </div>
+
         {/* Background grid */}
         <div 
           className="absolute inset-0 opacity-10"
@@ -155,7 +206,7 @@ const TourMapSection = () => {
               <circle
                 cx={flyingPoint.x}
                 cy={flyingPoint.y}
-                r="2.5"
+                r="3"
                 fill="hsl(var(--accent))"
                 style={{ filter: 'blur(4px)' }}
                 opacity="0.6"
@@ -164,14 +215,14 @@ const TourMapSection = () => {
               <circle
                 cx={flyingPoint.x}
                 cy={flyingPoint.y}
-                r="1"
+                r="1.5"
                 fill="hsl(var(--primary))"
               />
               {/* Bright center */}
               <circle
                 cx={flyingPoint.x}
                 cy={flyingPoint.y}
-                r="0.4"
+                r="0.6"
                 fill="hsl(var(--foreground))"
               />
             </g>
@@ -179,48 +230,61 @@ const TourMapSection = () => {
 
           {/* City points */}
           {cities.map((city, index) => (
-            <g key={index}>
+            <g 
+              key={index} 
+              className="cursor-pointer"
+              onClick={() => handleCityClick(city)}
+            >
+              {/* Clickable area - larger invisible circle */}
+              <circle
+                cx={city.x}
+                cy={city.y}
+                r="4"
+                fill="transparent"
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredCity(index)}
+                onMouseLeave={() => setHoveredCity(null)}
+              />
+              
               {/* Outer glow */}
               <motion.circle
                 cx={city.x}
                 cy={city.y}
-                r={hoveredCity === index ? 2.5 : 1.5}
+                r={hoveredCity === index ? 3.5 : 2.5}
                 fill="hsl(var(--accent))"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={isInView ? { opacity: 0.3, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
                 style={{ filter: 'blur(3px)' }}
+                className="pointer-events-none"
               />
               
               {/* Inner point */}
               <motion.circle
                 cx={city.x}
                 cy={city.y}
-                r={hoveredCity === index ? 1.2 : 0.8}
+                r={hoveredCity === index ? 1.8 : 1.3}
                 fill="hsl(var(--primary))"
                 stroke="hsl(var(--accent))"
-                strokeWidth="0.2"
+                strokeWidth="0.3"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-                className="cursor-pointer"
-                onMouseEnter={() => setHoveredCity(index)}
-                onMouseLeave={() => setHoveredCity(null)}
-                style={{ transition: 'r 0.3s ease' }}
+                className="pointer-events-none"
               />
               
               {/* Pulse animation */}
               <motion.circle
                 cx={city.x}
                 cy={city.y}
-                r="0.8"
+                r="1.3"
                 fill="none"
                 stroke="hsl(var(--accent))"
-                strokeWidth="0.1"
+                strokeWidth="0.15"
                 initial={{ opacity: 0 }}
                 animate={isInView ? { 
                   opacity: [0.5, 0],
-                  r: [0.8, 3],
+                  r: [1.3, 4],
                 } : {}}
                 transition={{ 
                   duration: 2,
@@ -228,6 +292,7 @@ const TourMapSection = () => {
                   repeat: Infinity,
                   repeatDelay: 3
                 }}
+                className="pointer-events-none"
               />
 
               {/* City label inside SVG */}
@@ -244,7 +309,7 @@ const TourMapSection = () => {
                 className="pointer-events-none uppercase"
                 style={{ fontWeight: hoveredCity === index ? 600 : 400 }}
               >
-                {city.name}
+                {city.shortName || city.name}
               </motion.text>
               <motion.text
                 x={city.x + city.labelOffset.x}
@@ -269,13 +334,17 @@ const TourMapSection = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-48 p-3 bg-card/90 border border-border/50 backdrop-blur-sm"
+            className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-52 p-3 bg-card/90 border border-border/50 backdrop-blur-sm cursor-pointer hover:border-accent/50 transition-colors"
+            onClick={() => handleCityClick(cities[hoveredCity])}
           >
             <p className="text-xs font-mono text-primary font-semibold">
               {cities[hoveredCity].name}
             </p>
             <p className="text-[10px] font-mono text-muted-foreground mt-1">
               {cities[hoveredCity].date}.2026
+            </p>
+            <p className="text-[10px] font-mono text-accent mt-2 flex items-center gap-1">
+              <span>→</span> КУПИТЬ БИЛЕТ
             </p>
           </motion.div>
         )}
@@ -292,15 +361,18 @@ const TourMapSection = () => {
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 0.6, delay: 2 }}
-        className="mt-4 flex items-center gap-6 text-[10px] font-mono text-muted-foreground"
+        className="mt-4 flex flex-wrap items-center gap-4 md:gap-6 text-[10px] font-mono text-muted-foreground"
       >
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-primary border border-accent" />
+          <div className="w-3 h-3 rounded-full bg-primary border-2 border-accent" />
           <span>ГОРОД</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-6 h-px bg-muted-foreground opacity-50" style={{ backgroundImage: 'repeating-linear-gradient(90deg, hsl(var(--muted-foreground)) 0, hsl(var(--muted-foreground)) 3px, transparent 3px, transparent 6px)' }} />
           <span>МАРШРУТ</span>
+        </div>
+        <div className="flex items-center gap-2 text-accent">
+          <span>КЛИК ДЛЯ ПОКУПКИ</span>
         </div>
       </motion.div>
     </section>
