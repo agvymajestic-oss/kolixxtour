@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface City {
   name: string;
@@ -30,58 +30,12 @@ const cities: City[] = [
 // Route order by date: СПб(24.01) → Петрозаводск(26.01) → Москва(31.01) → Казань(03.02) → Н.Новгород(06.02) → Екатеринбург(09.02) → Новосибирск(12.02) → Краснодар(15.02) → Самара(18.02)
 const routeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-// Snowflake component with CSS animation for better performance
-const Snowflake = ({ delay, duration, x, size }: { delay: number; duration: number; x: number; size: number }) => {
-  const drift = Math.sin(delay * 10) * 20;
-  
-  return (
-    <motion.div
-      className="absolute rounded-full bg-white/40"
-      style={{
-        width: size,
-        height: size,
-        left: `${x}%`,
-        filter: `blur(${size > 4 ? 2 : 1}px)`,
-        willChange: 'transform',
-      }}
-      initial={{ y: '-5%', opacity: 0 }}
-      animate={{
-        y: '105vh',
-        opacity: [0, 0.7, 0.7, 0],
-        x: [0, drift, 0, -drift, 0],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: 'linear',
-        x: {
-          duration: duration / 2,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }
-      }}
-    />
-  );
-};
-
 const TourMapSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredCity, setHoveredCity] = useState<number | null>(null);
   const [flyingPointProgress, setFlyingPointProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-
-  // Generate snowflakes only once - increased count for visible snow
-  const snowflakes = useMemo(() => 
-    Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      delay: i * 0.15, // Staggered start for continuous effect
-      duration: 8 + Math.random() * 8,
-      x: Math.random() * 100,
-      size: 2 + Math.random() * 5,
-    })), []
-  );
 
   // Start flying animation when in view
   useEffect(() => {
@@ -158,12 +112,6 @@ const TourMapSection = () => {
         transition={{ duration: 1 }}
         className="relative w-full aspect-[16/10] bg-card/20 border border-border/30 overflow-hidden"
       >
-        {/* Snowfall effect */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {snowflakes.map((flake) => (
-            <Snowflake key={flake.id} {...flake} />
-          ))}
-        </div>
 
         {/* Background grid */}
         <div 

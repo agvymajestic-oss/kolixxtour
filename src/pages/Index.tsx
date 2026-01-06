@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Preloader from '@/components/Preloader';
+import Snowfall from '@/components/Snowfall';
 import HeroSection from '@/components/HeroSection';
 import ManifestSection from '@/components/ManifestSection';
 import TourDatesSection from '@/components/TourDatesSection';
@@ -15,6 +16,9 @@ const Index = () => {
   return (
     <>
       {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
+      
+      {/* Global snowfall */}
+      <Snowfall />
       
       {/* Noise overlay */}
       <div className="noise-overlay" />
