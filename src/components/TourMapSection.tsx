@@ -1,34 +1,66 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface City {
   name: string;
   x: number;
   y: number;
   date: string;
+  labelOffset: { x: number; y: number }; // Custom offset for each label
 }
 
-// Approximate positions on a stylized Russia map (percentage-based)
+// Approximate positions on a stylized Russia map with custom label offsets
 const cities: City[] = [
-  { name: "Санкт-Петербург", x: 18, y: 25, date: "24.01" },
-  { name: "Петрозаводск", x: 22, y: 18, date: "26.01" },
-  { name: "Москва", x: 24, y: 35, date: "31.01" },
-  { name: "Казань", x: 35, y: 38, date: "03.02" },
-  { name: "Нижний Новгород", x: 29, y: 36, date: "06.02" },
-  { name: "Екатеринбург", x: 45, y: 38, date: "09.02" },
-  { name: "Новосибирск", x: 58, y: 42, date: "12.02" },
-  { name: "Краснодар", x: 25, y: 55, date: "15.02" },
-  { name: "Самара", x: 35, y: 45, date: "18.02" },
+  { name: "Санкт-Петербург", x: 15, y: 20, date: "24.01", labelOffset: { x: -8, y: -4 } },
+  { name: "Петрозаводск", x: 20, y: 12, date: "26.01", labelOffset: { x: 0, y: -4 } },
+  { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: -10, y: 2 } },
+  { name: "Казань", x: 38, y: 30, date: "03.02", labelOffset: { x: 4, y: -3 } },
+  { name: "Нижний Новгород", x: 30, y: 28, date: "06.02", labelOffset: { x: 0, y: -4 } },
+  { name: "Екатеринбург", x: 50, y: 28, date: "09.02", labelOffset: { x: 4, y: 0 } },
+  { name: "Новосибирск", x: 65, y: 38, date: "12.02", labelOffset: { x: 4, y: 0 } },
+  { name: "Краснодар", x: 25, y: 52, date: "15.02", labelOffset: { x: 4, y: 2 } },
+  { name: "Самара", x: 40, y: 42, date: "18.02", labelOffset: { x: 4, y: 0 } },
 ];
 
 // Route order for connecting lines
-const routeOrder = [0, 1, 2, 4, 3, 5, 6, 8, 7]; // SPB -> Petrozavodsk -> Moscow -> NN -> Kazan -> Ekb -> Novosib -> Samara -> Krasnodar
+const routeOrder = [0, 1, 2, 4, 3, 5, 6, 8, 7];
 
 const TourMapSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredCity, setHoveredCity] = useState<number | null>(null);
+  const [flyingPointProgress, setFlyingPointProgress] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Start flying animation when in view
+  useEffect(() => {
+    if (isInView && !isAnimating) {
+      setIsAnimating(true);
+      const duration = 8000; // 8 seconds for full route
+      const startTime = Date.now();
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        setFlyingPointProgress(progress);
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Restart animation after a pause
+          setTimeout(() => {
+            setFlyingPointProgress(0);
+            setIsAnimating(false);
+          }, 2000);
+        }
+      };
+      
+      setTimeout(() => {
+        requestAnimationFrame(animate);
+      }, 3500); // Start after route line is drawn
+    }
+  }, [isInView, isAnimating]);
 
   // Generate path for connecting lines
   const generatePath = () => {
@@ -43,6 +75,25 @@ const TourMapSection = () => {
     }
     return path;
   };
+
+  // Calculate flying point position along the route
+  const getFlyingPointPosition = () => {
+    if (flyingPointProgress === 0) return null;
+    
+    const totalSegments = routeOrder.length - 1;
+    const currentSegment = Math.min(Math.floor(flyingPointProgress * totalSegments), totalSegments - 1);
+    const segmentProgress = (flyingPointProgress * totalSegments) - currentSegment;
+    
+    const fromCity = cities[routeOrder[currentSegment]];
+    const toCity = cities[routeOrder[Math.min(currentSegment + 1, routeOrder.length - 1)]];
+    
+    return {
+      x: fromCity.x + (toCity.x - fromCity.x) * segmentProgress,
+      y: fromCity.y + (toCity.y - fromCity.y) * segmentProgress
+    };
+  };
+
+  const flyingPoint = getFlyingPointPosition();
 
   return (
     <section ref={ref} className="py-16 px-6">
@@ -97,6 +148,35 @@ const TourMapSection = () => {
             style={{ filter: 'blur(2px)' }}
           />
 
+          {/* Flying point along the route */}
+          {flyingPoint && (
+            <g>
+              {/* Glow trail */}
+              <circle
+                cx={flyingPoint.x}
+                cy={flyingPoint.y}
+                r="2.5"
+                fill="hsl(var(--accent))"
+                style={{ filter: 'blur(4px)' }}
+                opacity="0.6"
+              />
+              {/* Main flying point */}
+              <circle
+                cx={flyingPoint.x}
+                cy={flyingPoint.y}
+                r="1"
+                fill="hsl(var(--primary))"
+              />
+              {/* Bright center */}
+              <circle
+                cx={flyingPoint.x}
+                cy={flyingPoint.y}
+                r="0.4"
+                fill="hsl(var(--foreground))"
+              />
+            </g>
+          )}
+
           {/* City points */}
           {cities.map((city, index) => (
             <g key={index}>
@@ -149,34 +229,40 @@ const TourMapSection = () => {
                   repeatDelay: 3
                 }}
               />
+
+              {/* City label inside SVG */}
+              <motion.text
+                x={city.x + city.labelOffset.x}
+                y={city.y + city.labelOffset.y}
+                fill="hsl(var(--primary))"
+                fontSize="2.2"
+                fontFamily="monospace"
+                textAnchor={city.labelOffset.x < 0 ? "end" : city.labelOffset.x > 0 ? "start" : "middle"}
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: hoveredCity === index ? 1 : 0.8 } : { opacity: 0 }}
+                transition={{ duration: 0.3, delay: 1 + index * 0.1 }}
+                className="pointer-events-none uppercase"
+                style={{ fontWeight: hoveredCity === index ? 600 : 400 }}
+              >
+                {city.name}
+              </motion.text>
+              <motion.text
+                x={city.x + city.labelOffset.x}
+                y={city.y + city.labelOffset.y + 2.5}
+                fill="hsl(var(--accent))"
+                fontSize="1.8"
+                fontFamily="monospace"
+                textAnchor={city.labelOffset.x < 0 ? "end" : city.labelOffset.x > 0 ? "start" : "middle"}
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: hoveredCity === index ? 1 : 0.6 } : { opacity: 0 }}
+                transition={{ duration: 0.3, delay: 1 + index * 0.1 }}
+                className="pointer-events-none"
+              >
+                {city.date}
+              </motion.text>
             </g>
           ))}
         </svg>
-
-        {/* City labels */}
-        {cities.map((city, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: hoveredCity === index ? 1 : 0.7 } : { opacity: 0 }}
-            transition={{ duration: 0.3, delay: 1 + index * 0.1 }}
-            className="absolute pointer-events-none"
-            style={{
-              left: `${city.x}%`,
-              top: `${city.y}%`,
-              transform: 'translate(-50%, -150%)'
-            }}
-          >
-            <div className={`text-center transition-all duration-300 ${hoveredCity === index ? 'scale-110' : ''}`}>
-              <p className="text-[8px] md:text-[10px] font-mono text-primary whitespace-nowrap">
-                {city.name.toUpperCase()}
-              </p>
-              <p className="text-[7px] md:text-[9px] font-mono text-accent-foreground">
-                {city.date}
-              </p>
-            </div>
-          </motion.div>
-        ))}
 
         {/* Hover tooltip */}
         {hoveredCity !== null && (
