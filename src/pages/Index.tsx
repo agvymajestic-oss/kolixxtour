@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Preloader from '@/components/Preloader';
 import Snowfall from '@/components/Snowfall';
-import BackgroundMusic from '@/components/BackgroundMusic';
 import CountdownTimer from '@/components/CountdownTimer';
 import HeroSection from '@/components/HeroSection';
 import ManifestSection from '@/components/ManifestSection';
@@ -15,15 +14,22 @@ import Footer from '@/components/Footer';
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
+  // Skip preloader if coming from tickets page
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('skip') === '1') {
+      setIsLoading(false);
+      // Clean up URL
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
+
   return (
     <>
       {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
       
       {/* Global snowfall */}
       <Snowfall />
-      
-      {/* Background music */}
-      <BackgroundMusic />
       
       {/* Noise overlay */}
       <div className="noise-overlay" />

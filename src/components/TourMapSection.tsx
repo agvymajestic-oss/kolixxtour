@@ -34,35 +34,44 @@ const TourMapSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredCity, setHoveredCity] = useState<number | null>(null);
   const [flyingPointProgress, setFlyingPointProgress] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
 
-  // Start flying animation when in view
+  // Continuous flying animation loop
   useEffect(() => {
-    if (isInView && !isAnimating) {
-      setIsAnimating(true);
-      const duration = 8000;
-      const startTime = Date.now();
+    if (!isInView) return;
+    
+    let animationId: number;
+    let startTime: number | null = null;
+    const duration = 10000; // 10 seconds per loop
+    const pauseAtEnd = 2000; // 2 second pause at Samara
+    
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const totalCycle = duration + pauseAtEnd;
+      const cycleTime = elapsed % totalCycle;
       
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+      if (cycleTime < duration) {
+        // Moving along the route
+        const progress = cycleTime / duration;
         setFlyingPointProgress(progress);
-        
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          setTimeout(() => {
-            setFlyingPointProgress(0);
-            setIsAnimating(false);
-          }, 2000);
-        }
-      };
+      } else {
+        // Pause at the end (Samara)
+        setFlyingPointProgress(1);
+      }
       
-      setTimeout(() => {
-        requestAnimationFrame(animate);
-      }, 3500);
-    }
-  }, [isInView, isAnimating]);
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    // Start animation after route line draws
+    const timeout = setTimeout(() => {
+      animationId = requestAnimationFrame(animate);
+    }, 3500);
+    
+    return () => {
+      clearTimeout(timeout);
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [isInView]);
 
   // Generate path for connecting lines
   const generatePath = () => {
