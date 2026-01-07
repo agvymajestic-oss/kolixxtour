@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface City {
   name: string;
@@ -9,22 +10,19 @@ interface City {
   y: number;
   date: string;
   labelOffset: { x: number; y: number };
-  ticketUrl: string;
 }
-
-const TICKET_URL = "https://moscow.qtickets.events/208586-izi-moscow-club-kolixx";
 
 // Approximate positions on a stylized Russia map with custom label offsets
 const cities: City[] = [
-  { name: "Санкт-Петербург", shortName: "СПб", x: 15, y: 20, date: "24.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
-  { name: "Петрозаводск", x: 22, y: 10, date: "26.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
-  { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: 0, y: -5 }, ticketUrl: TICKET_URL },
-  { name: "Казань", x: 40, y: 28, date: "03.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Нижний Новгород", shortName: "Н.Новгород", x: 30, y: 38, date: "06.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Екатеринбург", x: 52, y: 26, date: "09.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Новосибирск", x: 68, y: 36, date: "12.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Краснодар", x: 25, y: 54, date: "15.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
-  { name: "Самара", x: 42, y: 44, date: "18.02", labelOffset: { x: 5, y: 0 }, ticketUrl: TICKET_URL },
+  { name: "Санкт-Петербург", shortName: "СПб", x: 15, y: 20, date: "24.01", labelOffset: { x: 0, y: -5 } },
+  { name: "Петрозаводск", x: 22, y: 10, date: "26.01", labelOffset: { x: 0, y: -5 } },
+  { name: "Москва", x: 22, y: 32, date: "31.01", labelOffset: { x: 0, y: -5 } },
+  { name: "Казань", x: 40, y: 28, date: "03.02", labelOffset: { x: 5, y: 0 } },
+  { name: "Нижний Новгород", shortName: "Н.Новгород", x: 30, y: 38, date: "06.02", labelOffset: { x: 5, y: 0 } },
+  { name: "Екатеринбург", x: 52, y: 26, date: "09.02", labelOffset: { x: 5, y: 0 } },
+  { name: "Новосибирск", x: 68, y: 36, date: "12.02", labelOffset: { x: 5, y: 0 } },
+  { name: "Краснодар", x: 25, y: 54, date: "15.02", labelOffset: { x: 5, y: 0 } },
+  { name: "Самара", x: 42, y: 44, date: "18.02", labelOffset: { x: 5, y: 0 } },
 ];
 
 // Route order by date: СПб(24.01) → Петрозаводск(26.01) → Москва(31.01) → Казань(03.02) → Н.Новгород(06.02) → Екатеринбург(09.02) → Новосибирск(12.02) → Краснодар(15.02) → Самара(18.02)
@@ -32,6 +30,7 @@ const routeOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 const TourMapSection = () => {
   const ref = useRef(null);
+  const navigate = useNavigate();
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [hoveredCity, setHoveredCity] = useState<number | null>(null);
   const [flyingPointProgress, setFlyingPointProgress] = useState(0);
@@ -96,8 +95,8 @@ const TourMapSection = () => {
     };
   };
 
-  const handleCityClick = (city: City) => {
-    window.open(city.ticketUrl, '_blank', 'noopener,noreferrer');
+  const handleCityClick = () => {
+    navigate('/tickets');
   };
 
   const flyingPoint = getFlyingPointPosition();
@@ -190,7 +189,7 @@ const TourMapSection = () => {
             <g 
               key={index} 
               className="cursor-pointer"
-              onClick={() => handleCityClick(city)}
+              onClick={() => handleCityClick()}
             >
               {/* Clickable area - larger invisible circle */}
               <circle
@@ -292,7 +291,7 @@ const TourMapSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-52 p-3 bg-card/90 border border-border/50 backdrop-blur-sm cursor-pointer hover:border-accent/50 transition-colors"
-            onClick={() => handleCityClick(cities[hoveredCity])}
+            onClick={() => handleCityClick()}
           >
             <p className="text-xs font-mono text-primary font-semibold">
               {cities[hoveredCity].name}

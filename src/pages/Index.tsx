@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Preloader from '@/components/Preloader';
 import Snowfall from '@/components/Snowfall';
+import BackgroundMusic from '@/components/BackgroundMusic';
+import CountdownTimer from '@/components/CountdownTimer';
 import HeroSection from '@/components/HeroSection';
 import ManifestSection from '@/components/ManifestSection';
 import TourDatesSection from '@/components/TourDatesSection';
@@ -20,6 +22,9 @@ const Index = () => {
       {/* Global snowfall */}
       <Snowfall />
       
+      {/* Background music */}
+      <BackgroundMusic />
+      
       {/* Noise overlay */}
       <div className="noise-overlay" />
       
@@ -29,6 +34,7 @@ const Index = () => {
       <main className={`min-h-screen bg-background transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         <div className="max-w-3xl mx-auto">
           <HeroSection />
+          <CountdownTimer />
           <ManifestSection />
           <TourDatesSection />
           <TourMapSection />
