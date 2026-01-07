@@ -49,13 +49,13 @@ const TicketsWaiting = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <Link
-            to="/"
+          <a
+            href="/?skip=1"
             className="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border hover:border-accent/50 text-foreground font-mono text-sm tracking-wider transition-colors duration-300"
           >
             <ArrowLeft className="w-4 h-4" />
             ВЕРНУТЬСЯ НА ГЛАВНУЮ
-          </Link>
+          </a>
         </motion.div>
       </motion.div>
       
