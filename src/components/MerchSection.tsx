@@ -55,9 +55,9 @@ const MerchSection = () => {
         
         <motion.p
           initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 0.5 } : {}}
+          animate={isInView ? { opacity: 0.8 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-xs text-muted-foreground mb-8 font-mono"
+          className="text-xs text-foreground/70 mb-8 font-mono font-medium"
         >
           Мерч доступен только на концертах тура.
         </motion.p>
@@ -81,19 +81,19 @@ const MerchSection = () => {
               </div>
               
               {/* Title */}
-              <h4 className="font-mono text-sm text-foreground mb-1 tracking-wide">
+              <h4 className="font-mono text-sm text-heading mb-1 tracking-wide font-bold">
                 {item.title}
               </h4>
               
               {/* Subtitle */}
-              <p className="text-xs text-muted-foreground font-mono mb-4">
+              <p className="text-xs text-foreground/60 font-mono mb-4 font-medium">
                 {item.subtitle}
               </p>
               
               {/* Button */}
               <button 
                 onClick={() => setSelectedItem(item)}
-                className="inline-block text-xs tracking-widest text-secondary-foreground border-b border-border group-hover:border-accent-foreground group-hover:text-accent-foreground transition-colors duration-300 pb-1 font-mono cursor-pointer bg-transparent"
+                className="inline-block text-xs tracking-widest text-foreground border-b border-border group-hover:border-accent-foreground group-hover:text-heading transition-colors duration-300 pb-1 font-mono cursor-pointer bg-transparent font-medium"
               >
                 СМОТРЕТЬ
               </button>
@@ -139,17 +139,17 @@ const MerchSection = () => {
               </div>
 
               {/* Product title */}
-              <h3 className="font-mono text-lg text-foreground mb-2 tracking-wide">
+              <h3 className="font-mono text-lg text-heading mb-2 tracking-wide font-bold">
                 {selectedItem.title}
               </h3>
 
               {/* Product subtitle */}
-              <p className="text-xs text-muted-foreground font-mono mb-4 uppercase tracking-wider">
+              <p className="text-xs text-foreground/60 font-mono mb-4 uppercase tracking-wider font-medium">
                 {selectedItem.subtitle}
               </p>
 
               {/* Product description */}
-              <p className="text-sm text-foreground/80 font-mono leading-relaxed mb-6">
+              <p className="text-sm text-foreground leading-relaxed mb-6 font-mono">
                 {selectedItem.description}
               </p>
 

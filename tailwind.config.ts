@@ -59,6 +59,7 @@ export default {
           DEFAULT: "hsl(var(--cold))",
           foreground: "hsl(var(--cold-foreground))",
         },
+        heading: "hsl(var(--heading))",
       },
       borderRadius: {
         lg: "var(--radius)",

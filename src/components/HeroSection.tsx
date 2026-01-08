@@ -9,7 +9,7 @@ const HeroSection = () => {
         transition={{ duration: 1, delay: 0.2 }}
         className="text-center"
       >
-        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-primary mb-4">
+        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-heading mb-4">
           KOLIXX
         </h1>
         
@@ -17,7 +17,7 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="font-display text-2xl md:text-4xl lg:text-5xl font-medium tracking-wide text-foreground"
+          className="font-display text-2xl md:text-4xl lg:text-5xl font-bold tracking-wide text-heading/90"
         >
           ВНЕ СИГНАЛА
         </motion.h2>
@@ -26,7 +26,7 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1 }}
-          className="mt-6 text-sm tracking-[0.4em] text-muted-foreground font-mono"
+          className="mt-6 text-sm tracking-[0.4em] text-foreground/70 font-mono font-medium"
         >
           ТУР 2026
         </motion.p>

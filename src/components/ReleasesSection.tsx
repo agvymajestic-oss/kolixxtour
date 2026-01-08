@@ -54,12 +54,12 @@ const ReleasesSection = () => {
             </div>
             
             {/* Title */}
-            <h3 className="font-display text-xl md:text-2xl font-semibold text-primary mb-3">
+            <h3 className="font-display text-xl md:text-2xl font-bold text-heading mb-3">
               {release.title}
             </h3>
             
             {/* Description */}
-            <p className="text-muted-foreground text-sm leading-relaxed mb-6 font-mono">
+            <p className="text-foreground/80 text-sm leading-relaxed mb-6 font-mono">
               {release.description}
             </p>
             
@@ -68,7 +68,7 @@ const ReleasesSection = () => {
               href={release.listenUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-6 py-3 border border-border text-sm tracking-widest text-secondary-foreground hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300 font-mono"
+              className="inline-block px-6 py-3 border border-border text-sm tracking-widest text-foreground hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300 font-mono font-medium"
             >
               СЛУШАТЬ
             </a>

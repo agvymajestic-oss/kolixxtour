@@ -6,62 +6,67 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 75%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 82%;
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 75%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 82%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 75%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 82%;
 
-    --primary: 0 0% 85%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 5%;
 
     --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 60%;
+    --secondary-foreground: 0 0% 72%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 58%;
 
-    --accent: 0 35% 25%;
-    --accent-foreground: 0 0% 85%;
+    --accent: 0 40% 28%;
+    --accent-foreground: 0 0% 95%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 30%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 35%;
 
     --radius: 0rem;
 
     /* Custom colors */
-    --blood: 0 45% 20%;
-    --blood-foreground: 0 0% 85%;
-    --cold: 260 10% 18%;
-    --cold-foreground: 260 5% 70%;
-    --noise-opacity: 0.03;
+    --blood: 0 50% 24%;
+    --blood-foreground: 0 0% 95%;
+    --cold: 260 12% 22%;
+    --cold-foreground: 260 8% 75%;
+    
+    /* Heading color for better contrast */
+    --heading: 0 0% 92%;
+    
+    --noise-opacity: 0.025;
   }
 
   .dark {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 75%;
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 75%;
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 75%;
-    --primary: 0 0% 85%;
-    --primary-foreground: 0 0% 4%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 82%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 82%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 82%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 5%;
     --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 60%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 35% 25%;
-    --accent-foreground: 0 0% 85%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 30%;
+    --secondary-foreground: 0 0% 72%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 58%;
+    --accent: 0 40% 28%;
+    --accent-foreground: 0 0% 95%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 35%;
+    --heading: 0 0% 92%;
   }
 }
 
@@ -73,10 +78,20 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'JetBrains Mono', monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Unbounded', sans-serif;
+    color: hsl(var(--heading));
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    line-height: 1.7;
   }
 }
 
@@ -116,8 +131,9 @@
 
   /* Section label */
   .section-label {
-    @apply text-xs tracking-[0.3em] uppercase text-muted-foreground mb-6;
+    @apply text-xs tracking-[0.3em] uppercase mb-6 font-semibold;
     font-family: 'JetBrains Mono', monospace;
+    color: hsl(var(--foreground) / 0.7);
   }
 }
 
