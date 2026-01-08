@@ -40,7 +40,7 @@ const AboutSection = () => {
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 0.8 }}
-        className="px-8 py-4 border border-border text-sm tracking-[0.3em] text-secondary-foreground hover:text-accent-foreground hover:border-accent transition-all duration-300 font-mono"
+        className="px-8 py-4 border border-border text-sm tracking-[0.3em] text-foreground hover:text-heading hover:border-accent transition-all duration-300 font-mono font-medium"
       >
         ОБ АРТИСТЕ
       </motion.a>
@@ -57,7 +57,7 @@ const AboutSection = () => {
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-accent transition-colors duration-300"
+            className="text-foreground/60 hover:text-heading transition-colors duration-300"
             aria-label={social.name}
           >
             <social.icon />

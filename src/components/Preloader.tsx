@@ -92,7 +92,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="relative"
           >
-            <h1 className="font-display text-4xl md:text-6xl font-bold tracking-wider text-primary">
+            <h1 className="font-display text-4xl md:text-6xl font-black tracking-wider text-heading">
               KOLIXX
             </h1>
             
@@ -117,7 +117,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           {/* Progress bar */}
           <div className="mt-12 w-48 h-px bg-muted overflow-hidden">
             <motion.div
-              className="h-full bg-muted-foreground"
+              className="h-full bg-foreground/60"
               style={{ width: `${progress}%` }}
               transition={{ duration: 0.1 }}
             />
@@ -126,9 +126,9 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           {/* Loading text */}
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            animate={{ opacity: 0.7 }}
             transition={{ delay: 0.5 }}
-            className="mt-4 text-xs tracking-[0.3em] text-muted-foreground font-mono"
+            className="mt-4 text-xs tracking-[0.3em] text-foreground/60 font-mono font-medium"
           >
             ЗАГРУЗКА
           </motion.p>

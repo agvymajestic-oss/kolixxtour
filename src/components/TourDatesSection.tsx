@@ -42,10 +42,10 @@ const TourDatesSection = () => {
               className="group flex items-center justify-between py-4 border-b border-border/30 hover:bg-muted/20 transition-colors duration-300 -mx-4 px-4"
             >
               <div className="flex items-center gap-6">
-                <span className="text-accent-foreground font-mono text-sm md:text-base font-semibold min-w-[60px]">
+                <span className="text-heading font-mono text-sm md:text-base font-bold min-w-[60px]">
                   {item.date}
                 </span>
-                <span className="text-foreground font-mono text-sm md:text-base tracking-wide">
+                <span className="text-foreground font-mono text-sm md:text-base tracking-wide font-medium">
                   {item.city}
                 </span>
               </div>

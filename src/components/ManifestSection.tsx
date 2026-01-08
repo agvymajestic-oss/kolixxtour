@@ -23,7 +23,7 @@ const ManifestSection = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: index * 0.2 }}
-            className="text-lg md:text-xl text-foreground leading-relaxed mb-2 font-mono"
+            className="text-lg md:text-xl text-foreground leading-relaxed mb-3 font-mono font-medium"
           >
             {line}
           </motion.p>
