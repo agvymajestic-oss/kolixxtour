@@ -1,14 +1,12 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-const BackgroundMusic = () => {
+const BackgroundMusic = memo(() => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Try to autoplay on first user interaction
   const handleFirstInteraction = useCallback(() => {
     if (!hasInteracted && audioRef.current) {
       setHasInteracted(true);
@@ -19,11 +17,9 @@ const BackgroundMusic = () => {
   }, [hasInteracted]);
 
   useEffect(() => {
-    // Show button after a delay
     const timeout = setTimeout(() => setIsVisible(true), 2000);
     
-    // Listen for any user interaction to try autoplay
-    const events = ['click', 'touchstart', 'keydown', 'scroll'];
+    const events = ['click', 'touchstart', 'keydown'];
     events.forEach(event => {
       document.addEventListener(event, handleFirstInteraction, { once: true, passive: true });
     });
@@ -36,7 +32,7 @@ const BackgroundMusic = () => {
     };
   }, [handleFirstInteraction]);
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (!audioRef.current) return;
     
     if (isPlaying) {
@@ -47,7 +43,9 @@ const BackgroundMusic = () => {
         .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
     }
-  };
+  }, [isPlaying]);
+
+  if (!isVisible) return null;
 
   return (
     <>
@@ -58,25 +56,22 @@ const BackgroundMusic = () => {
         preload="auto"
       />
       
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: isVisible ? 1 : 0, 
-          scale: isVisible ? 1 : 0.8 
-        }}
-        transition={{ duration: 0.3 }}
+      <button
         onClick={togglePlay}
-        className="fixed bottom-6 right-6 z-[100] w-10 h-10 flex items-center justify-center bg-card/80 border border-border/50 hover:border-accent/50 backdrop-blur-sm transition-colors duration-300"
+        className="fixed bottom-6 right-6 z-[100] w-10 h-10 flex items-center justify-center bg-card/80 border border-border/50 hover:border-accent/50 backdrop-blur-sm transition-colors duration-300 will-change-transform"
         aria-label={isPlaying ? 'Выключить музыку' : 'Включить музыку'}
+        style={{ transform: 'translateZ(0)' }}
       >
         {isPlaying ? (
           <Volume2 className="w-4 h-4 text-accent" />
         ) : (
           <VolumeX className="w-4 h-4 text-muted-foreground" />
         )}
-      </motion.button>
+      </button>
     </>
   );
-};
+});
+
+BackgroundMusic.displayName = 'BackgroundMusic';
 
 export default BackgroundMusic;

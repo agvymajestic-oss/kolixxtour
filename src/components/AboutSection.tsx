@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Instagram, Send } from 'lucide-react';
@@ -28,41 +28,53 @@ const socialLinks = [
 ];
 
 const AboutSection = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], [30, -20]);
 
   return (
     <section ref={ref} className="py-24 px-6 flex flex-col items-center justify-center gap-8">
-      <motion.a
-        href="https://band.link/koliixmusic"
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8 }}
-        className="px-8 py-4 border border-border text-sm tracking-[0.3em] text-foreground hover:text-heading hover:border-accent transition-all duration-300 font-mono font-medium"
-      >
-        ОБ АРТИСТЕ
-      </motion.a>
+      <motion.div style={{ y }} className="flex flex-col items-center gap-8 will-change-transform">
+        <motion.a
+          href="https://band.link/koliixmusic"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="px-8 py-4 border border-border text-sm tracking-[0.3em] text-foreground hover:text-heading hover:border-accent transition-all duration-500 font-mono font-medium"
+        >
+          ОБ АРТИСТЕ
+        </motion.a>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="flex items-center gap-6"
-      >
-        {socialLinks.map((social) => (
-          <a
-            key={social.name}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-foreground/60 hover:text-heading transition-colors duration-300"
-            aria-label={social.name}
-          >
-            <social.icon />
-          </a>
-        ))}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-center gap-6"
+        >
+          {socialLinks.map((social, index) => (
+            <motion.a
+              key={social.name}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground/60 hover:text-heading hover:scale-110 transition-all duration-300"
+              aria-label={social.name}
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1, delay: 0.5 + index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <social.icon />
+            </motion.a>
+          ))}
+        </motion.div>
       </motion.div>
     </section>
   );
