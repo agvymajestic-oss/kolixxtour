@@ -10,6 +10,7 @@ import ReleasesSection from '@/components/ReleasesSection';
 import MerchSection from '@/components/MerchSection';
 import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
+import FloatingCTA from '@/components/FloatingCTA';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +37,9 @@ const Index = () => {
       
       {/* Vignette */}
       <div className="vignette" />
+      
+      {/* Floating CTA */}
+      <FloatingCTA />
       
       <main className={`min-h-screen bg-background transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         <div className="max-w-3xl mx-auto">

@@ -104,17 +104,46 @@
     font-family: 'JetBrains Mono', monospace;
   }
 
+  /* Glassmorphism iOS 26 style */
+  .glass {
+    background: hsl(var(--background) / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  .glass-card {
+    background: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--border) / 0.3);
+    box-shadow: 
+      0 8px 32px hsl(0 0% 0% / 0.3),
+      inset 0 1px 0 hsl(var(--heading) / 0.05);
+  }
+
+  .glass-button {
+    background: hsl(var(--accent) / 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--accent) / 0.4);
+    box-shadow: 
+      0 4px 24px hsl(var(--accent) / 0.2),
+      inset 0 1px 0 hsl(var(--heading) / 0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-button:hover {
+    background: hsl(var(--accent) / 0.25);
+    border-color: hsl(var(--accent) / 0.6);
+    box-shadow: 
+      0 8px 32px hsl(var(--accent) / 0.35),
+      inset 0 1px 0 hsl(var(--heading) / 0.15);
+    transform: translateY(-2px);
+  }
+
   /* Noise overlay */
   .noise-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: var(--noise-opacity);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
   /* Vignette effect */

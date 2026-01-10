@@ -71,20 +71,38 @@ const TourDatesSection = () => {
           ))}
         </div>
 
-        {/* CTA after tour dates */}
+        {/* CTA Card - Glassmorphism */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, delay: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex justify-center"
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ duration: 1.2, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 flex justify-center"
         >
-          <Link
-            to="/tickets"
-            className="group flex items-center gap-3 px-6 py-3 border-2 border-accent bg-accent/10 text-accent-foreground font-mono text-sm tracking-wider hover:bg-accent hover:text-accent-foreground transition-all duration-500"
-          >
-            <span className="font-bold">ВЫБРАТЬ ГОРОД</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-          </Link>
+          <div className="glass-card rounded-2xl p-6 md:p-8 text-center max-w-md w-full">
+            <p className="text-heading font-display text-lg md:text-xl font-bold mb-2">
+              9 ГОРОДОВ
+            </p>
+            <p className="text-muted-foreground text-sm font-mono mb-6">
+              Успей забрать билет до повышения цен
+            </p>
+            
+            <Link
+              to="/tickets"
+              className="group relative inline-flex items-center justify-center gap-3 w-full px-8 py-4 glass-button rounded-xl font-mono text-sm tracking-wider transition-all duration-500"
+            >
+              <motion.span
+                className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+                animate={{ x: ['-200%', '200%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
+              />
+              <span className="relative z-10 font-bold text-heading">ВЫБРАТЬ ГОРОД</span>
+              <ArrowRight className="relative z-10 w-5 h-5 text-accent-foreground group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
+
+            <p className="mt-4 text-xs font-mono text-muted-foreground/70">
+              Бесплатная отмена за 24 часа
+            </p>
+          </div>
         </motion.div>
       </motion.div>
     </section>

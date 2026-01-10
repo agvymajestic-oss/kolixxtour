@@ -77,10 +77,10 @@ const MerchSection = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 1.2, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="group block p-6 border border-border/50 bg-card/30 hover:bg-card/60 transition-all duration-500"
+                className="group block p-6 glass-card rounded-xl hover:border-border/50 transition-all duration-500"
               >
                 {/* Product image */}
-                <div className="w-full aspect-[4/3] mb-4 overflow-hidden relative">
+                <div className="w-full aspect-[4/3] mb-4 overflow-hidden relative rounded-lg">
                   <img 
                     src={item.image} 
                     alt={item.title}
@@ -120,7 +120,7 @@ const MerchSection = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/95 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
             onClick={() => setSelectedItem(null)}
           >
             <motion.div
@@ -128,7 +128,7 @@ const MerchSection = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full max-w-lg bg-card border border-border p-6 max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-lg glass-card rounded-2xl p-6 max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -140,7 +140,7 @@ const MerchSection = () => {
               </button>
 
               {/* Product image */}
-              <div className="w-full aspect-[4/3] mb-6 overflow-hidden">
+              <div className="w-full aspect-[4/3] mb-6 overflow-hidden rounded-lg">
                 <img 
                   src={selectedItem.image} 
                   alt={selectedItem.title}
@@ -164,8 +164,8 @@ const MerchSection = () => {
               </p>
 
               {/* Important notice */}
-              <div className="p-4 bg-muted/20 border border-border/50">
-                <p className="text-sm text-foreground font-bold font-mono text-center">
+              <div className="p-4 glass rounded-xl">
+                <p className="text-sm text-heading font-bold font-mono text-center">
                   МЕРЧ ПРОДАЁТСЯ ТОЛЬКО НА КОНЦЕРТАХ
                 </p>
               </div>
