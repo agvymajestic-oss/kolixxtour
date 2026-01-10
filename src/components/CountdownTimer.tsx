@@ -152,31 +152,38 @@ const CountdownTimer = () => {
         transition={{ duration: 0.6 }}
         className="flex flex-col items-center gap-6 py-8"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="font-display text-lg md:text-2xl font-bold text-primary tracking-wide text-center"
-        >
-          ПРОДАЖА БИЛЕТОВ ОТКРЫТА
-        </motion.p>
-        
-        <AnimatePresence>
-          {showButton && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Link
-                to="/tickets"
-                className="inline-block px-8 py-3 bg-accent text-accent-foreground font-mono text-sm tracking-wider border border-accent hover:bg-accent/80 transition-colors duration-300"
+        <div className="glass-card rounded-2xl p-6 md:p-8 text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="font-display text-lg md:text-2xl font-bold text-heading tracking-wide mb-4"
+          >
+            ПРОДАЖА БИЛЕТОВ ОТКРЫТА
+          </motion.p>
+          
+          <AnimatePresence>
+            {showButton && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                КУПИТЬ БИЛЕТ
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <Link
+                  to="/tickets"
+                  className="group relative inline-flex items-center gap-3 px-8 py-4 glass-button rounded-xl font-mono text-sm tracking-wider"
+                >
+                  <motion.span
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-accent/20 to-transparent"
+                    animate={{ x: ['-200%', '200%'] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
+                  />
+                  <span className="relative z-10 font-bold text-heading">КУПИТЬ БИЛЕТ</span>
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </motion.div>
     );
   }
@@ -188,22 +195,28 @@ const CountdownTimer = () => {
       transition={{ duration: 0.6 }}
       className="py-8"
     >
-      <p className="section-label text-center">ДО НАЧАЛА ПРОДАЖ</p>
-      
-      <div className="flex flex-wrap justify-center items-baseline gap-x-2 md:gap-x-3 text-base sm:text-lg md:text-2xl lg:text-3xl">
-        <span className="font-mono text-muted-foreground text-[0.6em]">Осталось</span>
+      <div className="glass-card rounded-2xl p-6 md:p-8 mx-auto max-w-lg">
+        <p className="section-label text-center mb-4">ДО НАЧАЛА ПРОДАЖ</p>
         
-        {timeLeft.map((unit, index) => (
-          <span key={index} className="inline-flex items-baseline whitespace-nowrap">
-            <AnimatedNumber 
-              value={unit.value} 
-              minDigits={index === 0 ? 1 : 2} 
-            />
-            <span className="font-mono text-muted-foreground text-[0.5em] ml-1">
-              {unit.label}
+        <div className="flex flex-wrap justify-center items-baseline gap-x-2 md:gap-x-3 text-base sm:text-lg md:text-2xl lg:text-3xl">
+          <span className="font-mono text-muted-foreground text-[0.6em]">Осталось</span>
+          
+          {timeLeft.map((unit, index) => (
+            <span key={index} className="inline-flex items-baseline whitespace-nowrap">
+              <AnimatedNumber 
+                value={unit.value} 
+                minDigits={index === 0 ? 1 : 2} 
+              />
+              <span className="font-mono text-muted-foreground text-[0.5em] ml-1">
+                {unit.label}
+              </span>
             </span>
-          </span>
-        ))}
+          ))}
+        </div>
+
+        <p className="text-center text-xs font-mono text-muted-foreground/70 mt-4">
+          Подпишись, чтобы не пропустить
+        </p>
       </div>
     </motion.div>
   );

@@ -46,26 +46,61 @@ const HeroSection = () => {
           ТУР 2026
         </motion.p>
 
-        {/* CTA Button */}
+        {/* Primary CTA Button - Glassmorphism */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.4, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
           className="mt-12"
         >
           <Link
             to="/tickets"
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-accent text-accent-foreground font-mono text-sm tracking-widest border-2 border-accent hover:bg-accent/80 transition-all duration-500 overflow-hidden"
+            className="group relative inline-flex items-center gap-4 px-10 py-5 glass-button rounded-2xl font-mono text-base tracking-wider transition-all duration-500 overflow-hidden"
           >
-            <span className="relative z-10 font-bold">КУПИТЬ БИЛЕТ</span>
+            {/* Animated glow effect */}
             <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-accent via-accent/80 to-accent"
-              animate={{ x: ['-100%', '100%'] }}
+              className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-accent/30 to-transparent"
+              animate={{ x: ['-200%', '200%'] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-              style={{ opacity: 0.3 }}
             />
+            
+            {/* Pulse ring */}
+            <motion.span
+              className="absolute inset-0 rounded-2xl border-2 border-accent/40"
+              animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            
+            <span className="relative z-10 font-bold text-heading">КУПИТЬ БИЛЕТ</span>
+            <motion.svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="relative z-10 text-accent-foreground"
+              animate={{ x: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </motion.svg>
           </Link>
         </motion.div>
+
+        {/* Secondary info */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-4 text-xs font-mono text-muted-foreground"
+        >
+          ОГРАНИЧЕННОЕ КОЛИЧЕСТВО МЕСТ
+        </motion.p>
       </motion.div>
       
       {/* Scroll indicator */}
