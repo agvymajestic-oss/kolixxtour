@@ -146,6 +146,14 @@
   .noise-overlay {
   }
 
+  /* Site overlays (kept below fixed CTAs to avoid compositing flicker) */
+  .noise-overlay-site {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 12;
+  }
+
   /* Vignette effect */
   .vignette {
     position: fixed;
@@ -156,6 +164,86 @@
     pointer-events: none;
     z-index: 9998;
     background: radial-gradient(ellipse at center, transparent 0%, transparent 40%, hsl(0 0% 0% / 0.7) 100%);
+  }
+
+  .vignette-site {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 18;
+    background: radial-gradient(ellipse at center, transparent 0%, transparent 45%, hsl(0 0% 0% / 0.65) 100%);
+  }
+
+  /* Glass FAB (for fixed tiny controls like sound) */
+  .glass-fab {
+    background: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid hsl(var(--border) / 0.45);
+    box-shadow:
+      0 10px 30px hsl(0 0% 0% / 0.35),
+      inset 0 1px 0 hsl(var(--heading) / 0.06);
+  }
+
+  /* Snowfall (CSS-driven: no JS animation loop) */
+  .snowfall {
+    contain: layout paint;
+  }
+
+  .snowflake {
+    position: absolute;
+    top: -12vh;
+    animation-name: snow-fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .snowflake-inner {
+    display: block;
+    background: hsl(var(--foreground) / 0.12);
+    border-radius: 9999px;
+    animation-name: snow-drift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  @keyframes snow-fall {
+    0% {
+      transform: translate3d(0, -12vh, 0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.65;
+    }
+    90% {
+      opacity: 0.65;
+    }
+    100% {
+      transform: translate3d(0, 112vh, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes snow-drift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(var(--drift), 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .snowfall {
+      display: none;
+    }
   }
 
   /* Section label */

@@ -1,29 +1,22 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 const ManifestSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [50, -30]);
 
   const lines = [
     "Вне сигнала — это не образ.",
     "Это состояние.",
-    "Когда связь потеряна не с миром, а с собой."
+    "Когда связь потеряна не с миром, а с собой.",
   ];
 
   return (
     <section ref={ref} className="py-16 px-6">
-      <motion.div style={{ y }} className="will-change-transform">
+      <div>
         <p className="section-label">МАНИФЕСТ</p>
-        
+
         <div className="max-w-2xl">
           {lines.map((line, index) => (
             <motion.p
@@ -37,9 +30,10 @@ const ManifestSection = () => {
             </motion.p>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
 
 export default ManifestSection;
+
