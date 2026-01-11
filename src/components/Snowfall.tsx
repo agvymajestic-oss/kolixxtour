@@ -1,58 +1,65 @@
-import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-const Snowflake = ({ delay, duration, x, size }: { delay: number; duration: number; x: number; size: number }) => {
-  const drift = Math.sin(delay * 10) * 20;
-  
-  return (
-    <motion.div
-      className="absolute rounded-full bg-white/30"
-      style={{
-        width: size,
-        height: size,
-        left: `${x}%`,
-        filter: `blur(${size > 4 ? 2 : 1}px)`,
-        willChange: 'transform',
-      }}
-      initial={{ y: '-2%', opacity: 0 }}
-      animate={{
-        y: '100vh',
-        opacity: [0, 0.6, 0.6, 0],
-        x: [0, drift, 0, -drift, 0],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: 'linear',
-        x: {
-          duration: duration / 2,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }
-      }}
-    />
-  );
+type Snowflake = {
+  id: number;
+  delay: number;
+  duration: number;
+  x: number;
+  size: number;
+  drift: number;
+  driftDuration: number;
 };
 
-const Snowfall = () => {
-  const snowflakes = useMemo(() => 
-    Array.from({ length: 40 }, (_, i) => ({
-      id: i,
-      delay: i * 0.2,
-      duration: 10 + Math.random() * 10,
-      x: Math.random() * 100,
-      size: 2 + Math.random() * 4,
-    })), []
+const Snowfall = memo(() => {
+  const isMobile = useIsMobile();
+
+  // Keep DOM light on mobile + avoid JS-driven animations (no framer-motion here)
+  const count = isMobile ? 10 : 24;
+
+  const snowflakes = useMemo<Snowflake[]>(
+    () =>
+      Array.from({ length: count }, (_, i) => ({
+        id: i,
+        delay: i * 0.25,
+        duration: 10 + Math.random() * 10,
+        x: Math.random() * 100,
+        size: 2 + Math.random() * 4,
+        drift: (Math.random() * 2 - 1) * 24,
+        driftDuration: 3 + Math.random() * 3,
+      })),
+    [count]
   );
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-50">
+    <div className="snowfall fixed inset-0 overflow-hidden pointer-events-none z-10" aria-hidden="true">
       {snowflakes.map((flake) => (
-        <Snowflake key={flake.id} {...flake} />
+        <span
+          key={flake.id}
+          className="snowflake"
+          style={{
+            left: `${flake.x}%`,
+            animationDelay: `${flake.delay}s`,
+            animationDuration: `${flake.duration}s`,
+          }}
+        >
+          <span
+            className="snowflake-inner"
+            style={{
+              width: flake.size,
+              height: flake.size,
+            ...( { ['--drift' as any]: `${flake.drift}px` } as any ),
+              animationDuration: `${flake.driftDuration}s`,
+              filter: `blur(${flake.size > 4 ? 2 : 1}px)`,
+            }}
+          />
+        </span>
       ))}
     </div>
   );
-};
+});
+
+Snowfall.displayName = 'Snowfall';
 
 export default Snowfall;
+

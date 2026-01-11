@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { X } from 'lucide-react';
@@ -48,17 +48,11 @@ const MerchSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [selectedItem, setSelectedItem] = useState<MerchItem | null>(null);
   
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [50, -30]);
 
   return (
     <>
       <section ref={ref} className="py-16 px-6">
-        <motion.div style={{ y }} className="will-change-transform">
+        <div>
           <p className="section-label">МЕРЧ</p>
           
           <motion.p
@@ -109,7 +103,7 @@ const MerchSection = () => {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Product Modal */}

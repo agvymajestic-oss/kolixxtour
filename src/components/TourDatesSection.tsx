@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -24,19 +24,12 @@ const tourDates: TourDate[] = [
 const TourDatesSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [40, -20]);
 
   return (
     <section ref={ref} className="py-16 px-6">
-      <motion.div style={{ y }} className="will-change-transform">
+      <div>
         <p className="section-label">ДАТЫ ТУРА</p>
-        
+
         <div className="space-y-0">
           {tourDates.map((item, index) => (
             <motion.div
@@ -57,10 +50,8 @@ const TourDatesSection = () => {
                     {item.city}
                   </span>
                 </div>
-                
-                <motion.div
-                  className="flex items-center gap-2 text-muted-foreground group-hover:text-accent transition-colors duration-300"
-                >
+
+                <motion.div className="flex items-center gap-2 text-muted-foreground group-hover:text-accent transition-colors duration-300">
                   <span className="text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
                     БИЛЕТЫ
                   </span>
@@ -79,13 +70,9 @@ const TourDatesSection = () => {
           className="mt-12 flex justify-center"
         >
           <div className="glass-card rounded-2xl p-6 md:p-8 text-center max-w-md w-full">
-            <p className="text-heading font-display text-lg md:text-xl font-bold mb-2">
-              9 ГОРОДОВ
-            </p>
-            <p className="text-muted-foreground text-sm font-mono mb-6">
-              Успей забрать билет до повышения цен
-            </p>
-            
+            <p className="text-heading font-display text-lg md:text-xl font-bold mb-2">9 ГОРОДОВ</p>
+            <p className="text-muted-foreground text-sm font-mono mb-6">Успей забрать билет до повышения цен</p>
+
             <Link
               to="/tickets"
               className="group relative inline-flex items-center justify-center gap-3 w-full px-8 py-4 glass-button rounded-xl font-mono text-sm tracking-wider transition-all duration-500"
@@ -99,14 +86,13 @@ const TourDatesSection = () => {
               <ArrowRight className="relative z-10 w-5 h-5 text-accent-foreground group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
 
-            <p className="mt-4 text-xs font-mono text-muted-foreground/70">
-              Бесплатная отмена за 24 часа
-            </p>
+            <p className="mt-4 text-xs font-mono text-muted-foreground/70">Бесплатная отмена за 24 часа</p>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 };
 
 export default TourDatesSection;
+

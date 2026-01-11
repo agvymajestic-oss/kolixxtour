@@ -32,11 +32,11 @@ const Index = () => {
       {/* Global snowfall */}
       <Snowfall />
       
-      {/* Noise overlay */}
-      <div className="noise-overlay" />
-      
-      {/* Vignette */}
-      <div className="vignette" />
+      {/* Noise overlay (kept below fixed controls to avoid flicker) */}
+      <div className="noise-overlay-site" />
+
+      {/* Vignette (kept below fixed controls to avoid flicker) */}
+      <div className="vignette-site" />
       
       {/* Floating CTA */}
       <FloatingCTA />

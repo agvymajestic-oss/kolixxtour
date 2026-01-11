@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Instagram, Send } from 'lucide-react';
@@ -31,16 +31,10 @@ const AboutSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [30, -20]);
 
   return (
     <section ref={ref} className="py-24 px-6 flex flex-col items-center justify-center gap-8">
-      <motion.div style={{ y }} className="flex flex-col items-center gap-8 will-change-transform">
+      <div className="flex flex-col items-center gap-8">
         <motion.a
           href="https://band.link/koliixmusic"
           target="_blank"
@@ -75,7 +69,7 @@ const AboutSection = () => {
             </motion.a>
           ))}
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 };

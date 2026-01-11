@@ -58,9 +58,8 @@ const BackgroundMusic = memo(() => {
       
       <button
         onClick={togglePlay}
-        className="fixed bottom-6 right-6 z-[100] w-10 h-10 flex items-center justify-center bg-card/80 border border-border/50 hover:border-accent/50 backdrop-blur-sm transition-colors duration-300 will-change-transform"
+        className="fixed bottom-6 left-6 z-[70] w-10 h-10 flex items-center justify-center glass-fab transition-colors duration-300"
         aria-label={isPlaying ? 'Выключить музыку' : 'Включить музыку'}
-        style={{ transform: 'translateZ(0)' }}
       >
         {isPlaying ? (
           <Volume2 className="w-4 h-4 text-accent" />
