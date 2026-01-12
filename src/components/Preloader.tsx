@@ -85,9 +85,9 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
             left: 0,
             right: 0,
             bottom: 0,
-            width: '100vw',
-            height: '100vh',
-            overflow: 'hidden'
+             width: '100vw',
+             height: '100svh',
+             overflow: 'hidden'
           }}
         >
           {/* Noise overlay */}

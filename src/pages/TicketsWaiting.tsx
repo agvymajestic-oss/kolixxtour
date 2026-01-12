@@ -4,7 +4,7 @@ import { ArrowLeft, Clock } from 'lucide-react';
 
 const TicketsWaiting = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative">
+    <div className="min-h-[100svh] flex flex-col items-center justify-center px-6 relative">
       {/* Background effects */}
       <div className="noise-overlay" />
       <div className="vignette" />

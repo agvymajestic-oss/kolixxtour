@@ -26,7 +26,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100svh] bg-background">
       {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
       
       {/* Global snowfall - only render after preloader */}
@@ -43,7 +43,7 @@ const Index = () => {
       
       <main 
         className={`transition-opacity duration-500 ${isLoading ? 'opacity-0 invisible' : 'opacity-100 visible'}`}
-        style={{ minHeight: '100vh' }}
+        style={{ minHeight: '100svh' }}
       >
         <div className="max-w-3xl mx-auto">
           <HeroSection />

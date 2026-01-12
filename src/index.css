@@ -1,17 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700;800;900&display=swap');
-
-/* Preload critical font metrics to prevent layout shift */
-@font-face {
-  font-family: 'Unbounded';
-  font-display: swap;
-  src: local('Unbounded');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-display: swap;
-  src: local('JetBrains Mono');
-}
+/* Fonts loaded via <link> in index.html to avoid @import render-blocking */
 
 @tailwind base;
 @tailwind components;
@@ -88,12 +75,26 @@
     @apply border-border;
   }
 
+  html {
+    height: 100%;
+    /* Prevent width-jump when scrollbars appear/disappear */
+    scrollbar-gutter: stable;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'JetBrains Mono', monospace;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+
+    /* Stable viewport height to avoid "jump" on mobile when address bar changes */
+    min-height: 100svh;
+    overflow-y: scroll;
+  }
+
+  #root {
+    min-height: 100svh;
   }
 
   h1, h2, h3, h4, h5, h6 {

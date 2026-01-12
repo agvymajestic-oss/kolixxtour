@@ -17,7 +17,7 @@ const HeroSection = () => {
     <section 
       ref={ref} 
       className="flex flex-col items-center justify-center relative px-6"
-      style={{ minHeight: '100vh', height: '100vh' }}
+      style={{ minHeight: '100svh', height: '100svh' }}
     >
       <motion.div
         style={{ y, opacity, scale }}
