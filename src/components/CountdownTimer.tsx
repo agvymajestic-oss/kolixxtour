@@ -64,7 +64,14 @@ const AnimatedNumber = memo(({ value, minDigits = 2 }: { value: number; minDigit
 AnimatedNumber.displayName = 'AnimatedNumber';
 
 const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState<TimeUnit[]>([]);
+  // Initialize with placeholder values to prevent layout shift
+  const [timeLeft, setTimeLeft] = useState<TimeUnit[]>([
+    { value: 0, label: 'дней' },
+    { value: 0, label: 'часов' },
+    { value: 0, label: 'минут' },
+    { value: 0, label: 'секунд' },
+  ]);
+  const [isReady, setIsReady] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
@@ -136,13 +143,14 @@ const CountdownTimer = () => {
         setTimeout(() => setShowButton(true), 600);
       } else {
         setTimeLeft(result);
+        if (!isReady) setIsReady(true);
       }
     };
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [calculateTimeLeft]);
+  }, [calculateTimeLeft, isReady]);
 
   if (isExpired) {
     return (
@@ -189,16 +197,22 @@ const CountdownTimer = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
+    <div 
       className="py-8"
+      style={{ minHeight: '200px' }}
     >
-      <div className="glass-card rounded-2xl p-6 md:p-8 mx-auto max-w-lg">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isReady ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+        className="glass-card rounded-2xl p-6 md:p-8 mx-auto max-w-lg"
+      >
         <p className="section-label text-center mb-4">ДО НАЧАЛА ПРОДАЖ</p>
         
-        <div className="flex flex-wrap justify-center items-baseline gap-x-2 md:gap-x-3 text-base sm:text-lg md:text-2xl lg:text-3xl">
+        <div 
+          className="flex flex-wrap justify-center items-baseline gap-x-2 md:gap-x-3 text-base sm:text-lg md:text-2xl lg:text-3xl"
+          style={{ minHeight: '2.5em' }}
+        >
           <span className="font-mono text-muted-foreground text-[0.6em]">Осталось</span>
           
           {timeLeft.map((unit, index) => (
@@ -217,8 +231,8 @@ const CountdownTimer = () => {
         <p className="text-center text-xs font-mono text-muted-foreground/70 mt-4">
           Подпишись, чтобы не пропустить
         </p>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

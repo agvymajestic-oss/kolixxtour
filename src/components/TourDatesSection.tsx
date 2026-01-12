@@ -26,7 +26,11 @@ const TourDatesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <section ref={ref} className="py-16 px-6">
+    <section 
+      ref={ref} 
+      className="py-16 px-6"
+      style={{ minHeight: '600px' }}
+    >
       <div>
         <p className="section-label">ДАТЫ ТУРА</p>
 
@@ -34,9 +38,13 @@ const TourDatesSection = () => {
           {tourDates.map((item, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 1, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                transform: isInView ? 'translateX(0)' : 'translateX(-30px)',
+                transition: `transform 1s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.1}s`
+              }}
             >
               <Link
                 to="/tickets"

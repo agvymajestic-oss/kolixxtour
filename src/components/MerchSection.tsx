@@ -51,7 +51,11 @@ const MerchSection = () => {
 
   return (
     <>
-      <section ref={ref} className="py-16 px-6">
+      <section 
+        ref={ref} 
+        className="py-16 px-6"
+        style={{ minHeight: '800px' }}
+      >
         <div>
           <p className="section-label">МЕРЧ</p>
           
@@ -73,13 +77,19 @@ const MerchSection = () => {
                 transition={{ duration: 1.2, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="group block p-6 glass-card rounded-xl hover:border-border/50 transition-all duration-500"
               >
-                {/* Product image */}
-                <div className="w-full aspect-[4/3] mb-4 overflow-hidden relative rounded-lg">
+                {/* Product image - fixed aspect ratio prevents CLS */}
+                <div 
+                  className="w-full mb-4 overflow-hidden relative rounded-lg bg-muted/20"
+                  style={{ aspectRatio: '4/3' }}
+                >
                   <img 
                     src={item.image} 
                     alt={item.title}
+                    width={400}
+                    height={300}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 
@@ -134,11 +144,17 @@ const MerchSection = () => {
               </button>
 
               {/* Product image */}
-              <div className="w-full aspect-[4/3] mb-6 overflow-hidden rounded-lg">
+              <div 
+                className="w-full mb-6 overflow-hidden rounded-lg bg-muted/20"
+                style={{ aspectRatio: '4/3' }}
+              >
                 <img 
                   src={selectedItem.image} 
                   alt={selectedItem.title}
+                  width={400}
+                  height={300}
                   className="w-full h-full object-cover"
+                  decoding="async"
                 />
               </div>
 

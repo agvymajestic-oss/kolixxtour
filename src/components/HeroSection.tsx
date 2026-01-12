@@ -14,7 +14,11 @@ const HeroSection = () => {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
 
   return (
-    <section ref={ref} className="min-h-screen flex flex-col items-center justify-center relative px-6">
+    <section 
+      ref={ref} 
+      className="flex flex-col items-center justify-center relative px-6"
+      style={{ minHeight: '100vh', height: '100vh' }}
+    >
       <motion.div
         style={{ y, opacity, scale }}
         className="text-center will-change-transform"

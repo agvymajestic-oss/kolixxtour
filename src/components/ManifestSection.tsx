@@ -13,7 +13,11 @@ const ManifestSection = () => {
   ];
 
   return (
-    <section ref={ref} className="py-16 px-6">
+    <section 
+      ref={ref} 
+      className="py-16 px-6"
+      style={{ minHeight: '200px' }}
+    >
       <div>
         <p className="section-label">МАНИФЕСТ</p>
 
@@ -21,10 +25,14 @@ const ManifestSection = () => {
           {lines.map((line, index) => (
             <motion.p
               key={index}
-              initial={{ opacity: 0, y: 25 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 1.2, delay: index * 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="text-lg md:text-xl text-foreground leading-relaxed mb-3 font-mono font-medium"
+              style={{ 
+                transform: isInView ? 'translateY(0)' : 'translateY(25px)',
+                transition: `transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.3}s`
+              }}
             >
               {line}
             </motion.p>

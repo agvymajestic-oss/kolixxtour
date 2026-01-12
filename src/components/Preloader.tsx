@@ -78,6 +78,17 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
           className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-background"
+          style={{ 
+            // Prevent any layout shift during preloader
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            overflow: 'hidden'
+          }}
         >
           {/* Noise overlay */}
           <div className="noise-overlay" />
@@ -91,12 +102,13 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="relative"
+            style={{ willChange: 'transform, opacity' }}
           >
             <h1 className="font-display text-4xl md:text-6xl font-black tracking-wider text-heading">
               KOLIXX
             </h1>
             
-            {/* Glitch effect overlay */}
+            {/* Glitch effect overlay - use transform only */}
             <motion.div
               animate={{
                 x: [0, -2, 2, 0],
@@ -108,27 +120,34 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
                 repeatDelay: 2,
               }}
               className="absolute inset-0 text-4xl md:text-6xl font-bold tracking-wider font-display text-accent opacity-50"
-              style={{ clipPath: 'inset(40% 0 40% 0)' }}
+              style={{ 
+                clipPath: 'inset(40% 0 40% 0)',
+                willChange: 'transform, opacity'
+              }}
             >
               KOLIXX
             </motion.div>
           </motion.div>
           
-          {/* Progress bar */}
-          <div className="mt-12 w-48 h-px bg-muted overflow-hidden">
+          {/* Progress bar - fixed height */}
+          <div 
+            className="mt-12 w-48 bg-muted overflow-hidden"
+            style={{ height: '1px' }}
+          >
             <motion.div
               className="h-full bg-foreground/60"
-              style={{ width: `${progress}%` }}
+              style={{ width: `${progress}%`, willChange: 'width' }}
               transition={{ duration: 0.1 }}
             />
           </div>
           
-          {/* Loading text */}
+          {/* Loading text - fixed height */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
             transition={{ delay: 0.5 }}
             className="mt-4 text-xs tracking-[0.3em] text-foreground/60 font-mono font-medium"
+            style={{ minHeight: '1.5em' }}
           >
             ЗАГРУЗКА
           </motion.p>

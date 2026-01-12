@@ -111,14 +111,19 @@ const TourMapSection = () => {
   const flyingPoint = getFlyingPointPosition();
 
   return (
-    <section ref={ref} className="py-16 px-6">
+    <section 
+      ref={ref} 
+      className="py-16 px-6"
+      style={{ minHeight: '400px' }}
+    >
       <p className="section-label">ГЕОГРАФИЯ</p>
       
       <motion.div
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 1 }}
-        className="relative w-full aspect-[16/10] bg-card/20 border border-border/30 overflow-hidden"
+        className="relative w-full bg-card/20 border border-border/30 overflow-hidden"
+        style={{ aspectRatio: '16/10' }}
       >
 
         {/* Background grid */}
