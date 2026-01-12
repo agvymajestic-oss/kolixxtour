@@ -33,7 +33,11 @@ const AboutSection = () => {
   
 
   return (
-    <section ref={ref} className="py-24 px-6 flex flex-col items-center justify-center gap-8">
+    <section 
+      ref={ref} 
+      className="py-24 px-6 flex flex-col items-center justify-center gap-8"
+      style={{ minHeight: '200px' }}
+    >
       <div className="flex flex-col items-center gap-8">
         <motion.a
           href="https://band.link/koliixmusic"

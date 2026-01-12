@@ -26,11 +26,11 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <div className="min-h-screen bg-background">
       {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
       
-      {/* Global snowfall */}
-      <Snowfall />
+      {/* Global snowfall - only render after preloader */}
+      {!isLoading && <Snowfall />}
       
       {/* Noise overlay (kept below fixed controls to avoid flicker) */}
       <div className="noise-overlay-site" />
@@ -38,10 +38,13 @@ const Index = () => {
       {/* Vignette (kept below fixed controls to avoid flicker) */}
       <div className="vignette-site" />
       
-      {/* Floating CTA */}
-      <FloatingCTA />
+      {/* Floating CTA - only render after preloader */}
+      {!isLoading && <FloatingCTA />}
       
-      <main className={`min-h-screen bg-background transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+      <main 
+        className={`transition-opacity duration-500 ${isLoading ? 'opacity-0 invisible' : 'opacity-100 visible'}`}
+        style={{ minHeight: '100vh' }}
+      >
         <div className="max-w-3xl mx-auto">
           <HeroSection />
           <CountdownTimer />
@@ -54,7 +57,7 @@ const Index = () => {
           <Footer />
         </div>
       </main>
-    </>
+    </div>
   );
 };
 

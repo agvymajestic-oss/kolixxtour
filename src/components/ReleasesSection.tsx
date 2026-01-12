@@ -32,7 +32,11 @@ const ReleasesSection = () => {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <section ref={ref} className="py-16 px-6">
+    <section 
+      ref={ref} 
+      className="py-16 px-6"
+      style={{ minHeight: '600px' }}
+    >
       <div>
         <p className="section-label">РЕЛИЗЫ</p>
 
@@ -45,15 +49,21 @@ const ReleasesSection = () => {
               transition={{ duration: 1.2, delay: index * 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="group"
             >
-              {/* Image */}
-              <div className="relative overflow-hidden mb-6">
+              {/* Image - fixed aspect ratio prevents CLS */}
+              <div 
+                className="relative overflow-hidden mb-6 bg-muted/20"
+                style={{ aspectRatio: '1/1' }}
+              >
                 <motion.img
                   src={release.imageUrl}
                   alt={release.title}
-                  className="w-full aspect-square object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.8 }}
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent pointer-events-none" />
               </div>

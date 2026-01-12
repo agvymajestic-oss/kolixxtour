@@ -1,5 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700;800;900&display=swap');
 
+/* Preload critical font metrics to prevent layout shift */
+@font-face {
+  font-family: 'Unbounded';
+  font-display: swap;
+  src: local('Unbounded');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: swap;
+  src: local('JetBrains Mono');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
